@@ -81,6 +81,14 @@
       font-weight:900;
       letter-spacing:.6px;
       flex:0 0 auto;
+      overflow:hidden;
+    }
+    .avatar img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      border-radius:13px;
+      display:block;
     }
     .brand .txt{
       min-width:0;
@@ -303,13 +311,16 @@
       color: var(--ink);
       background: rgba(148,163,184,.12);
       margin-inline-start:6px;
+      white-space:nowrap;
     }
     .badge.good{ background: rgba(22,163,74,.12); border-color: rgba(22,163,74,.20); color: #15803d; }
     .badge.bad{ background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.20); color: #b91c1c; }
     .badge.warn{ background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.22); color: #b45309; }
+    .badge.purple{ background: rgba(139,92,246,.12); border-color: rgba(139,92,246,.22); color:#6d28d9; }
     html[data-theme="dark"] .badge.good{ color:#4ade80; }
     html[data-theme="dark"] .badge.bad{ color:#f87171; }
     html[data-theme="dark"] .badge.warn{ color:#fbbf24; }
+    html[data-theme="dark"] .badge.purple{ color:#c4b5fd; }
 
     .sub-actions{
       display:flex;
@@ -439,45 +450,166 @@
 
     /* Receipt hidden */
     #hidden-area{ position: fixed; left: -9999px; top:0; }
+
+    /* ===== Receipt v2 ===== */
     .receipt{
-      width: 340px;
-      background: #fff;
-      border-radius: 18px;
-      padding: 16px;
-      text-align:center;
+      width: 360px;
+      padding: 0;
+      border-radius: 20px;
+      overflow: hidden;
+      background:#fff;
       border: 1px solid #e5e7eb;
+      text-align: right;
+      direction: rtl;
+      position: relative;
     }
-    .receipt h2{ margin:0; font-weight: 900; font-size: 1.05rem; }
-    .receipt .meta{ color:#334155; font-weight: 800; margin-top:6px; font-size:.82rem; }
-    .receipt .hr{ height:1px; background:#e5e7eb; margin: 10px 0; }
-    .receipt .data{ text-align:right; font-weight: 800; color:#0b1220; font-size: .88rem; }
-    .receipt .data p{ margin: 7px 0; }
-    .receipt .pay{
+    .receipt .r-top{
+      padding: 14px 14px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      color:#fff;
+      background: linear-gradient(135deg, #0b1220, #020617);
+    }
+    .receipt.paid .r-top{
+      background: linear-gradient(135deg, #16a34a, #065f46);
+    }
+    .receipt.unpaid .r-top{
+      background: linear-gradient(135deg, #ef4444, #7f1d1d);
+    }
+    .receipt .r-logo{
+      width:52px;
+      height:52px;
+      border-radius: 18px;
+      display:grid;
+      place-items:center;
+      background: rgba(255,255,255,.14);
+      border: 1px solid rgba(255,255,255,.18);
+      font-weight: 900;
+      overflow:hidden;
+      flex: 0 0 auto;
+    }
+    .receipt .r-logo img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .receipt .r-mid{ flex:1; min-width:0; }
+    .receipt .r-store{
+      font-weight: 900;
+      font-size: 1.05rem;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       text-align:right;
-      font-weight:900;
-      font-size:.84rem;
-      color:#0b1220;
+    }
+    .receipt .r-meta{
       margin-top: 6px;
+      font-weight: 800;
+      font-size: .78rem;
+      opacity: .92;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align:right;
     }
-    .receipt .pay ul{
-      margin: 8px 0 0;
-      padding: 0 18px 0 0;
+    .receipt .r-status{
+      flex:0 0 auto;
+      border: 1px solid rgba(255,255,255,.24);
+      background: rgba(255,255,255,.14);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: .78rem;
+      white-space: nowrap;
+    }
+    .receipt .r-body{ padding: 12px 14px 14px; }
+    .receipt .r-kv{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding: 7px 0;
+      font-weight: 800;
+      font-size: .88rem;
       color:#0b1220;
-      font-weight:800;
-      font-size:.82rem;
+      border-bottom: 1px dashed rgba(148,163,184,.55);
     }
-    .receipt .foot{
-      margin-top: 10px;
+    .receipt .r-kv:last-child{ border-bottom:none; }
+    .receipt .r-kv span{ color:#475569; font-weight: 900; }
+    .receipt .r-kv b{ font-weight: 900; text-align:left; }
+    .receipt .r-kv.total{ border-bottom:none; margin-top: 6px; }
+    .receipt .r-kv.total b{ font-size: 1.05rem; }
+    .receipt .r-sep{ height:1px; background:#e5e7eb; margin: 10px 0; }
+    .receipt .r-head{
+      font-weight: 900;
+      font-size: .9rem;
+      color:#0b1220;
+      margin-bottom: 8px;
+      text-align:right;
+    }
+    .receipt .r-paylist{
+      margin: 0;
+      padding: 0 18px 0 0;
+      font-weight: 800;
+      color:#0b1220;
+      font-size: .85rem;
+    }
+    .receipt .r-paylist li{ margin: 6px 0; }
+    .receipt .pm{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+    .receipt .pm-note{
+      margin-top: 4px;
+      font-size: .78rem;
+      color:#475569;
+      font-weight: 800;
+    }
+    .receipt .sk-icon{
+      width: 14px;
+      height: 14px;
+      object-fit: contain;
+      display:inline-block;
+      border-radius: 3px;
+    }
+    .receipt .sk-pill{
+      font-size: .72rem;
+      font-weight: 900;
+      border:1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 1px 4px;
+      background: #f1f5f9;
+    }
+    .receipt .r-foot{
+      white-space: pre-line;
+      font-weight: 900;
       font-size: .74rem;
       color:#334155;
-      font-weight: 900;
-      line-height: 1.5;
-      white-space: pre-line;
+      line-height: 1.55;
+      text-align:right;
     }
-    .qr-wrap{
-      display:flex;
-      justify-content:center;
-      margin-top: 10px;
+    .receipt .qr-wrap{ display:flex; justify-content:center; margin-top: 12px; }
+    .receipt.paid::after{
+      content:"مدفوع";
+      position:absolute;
+      inset:auto -20px 40px auto;
+      transform: rotate(12deg);
+      font-size: 46px;
+      font-weight: 900;
+      color: rgba(22,163,74,.14);
+      letter-spacing: 2px;
+      pointer-events:none;
+    }
+    .receipt.unpaid::after{
+      content:"غير مدفوع";
+      position:absolute;
+      inset:auto -26px 40px auto;
+      transform: rotate(12deg);
+      font-size: 40px;
+      font-weight: 900;
+      color: rgba(239,68,68,.12);
+      letter-spacing: 1px;
+      pointer-events:none;
     }
   </style>
 </head>
@@ -752,19 +884,29 @@
 
   <!-- Receipt Hidden -->
   <div id="hidden-area">
-    <div id="receiptBox" class="receipt">
-      <h2 id="rStore">CD متجر CD</h2>
-      <div class="meta" id="rMeta">وصل</div>
-      <div class="hr"></div>
-      <div class="data" id="rData"></div>
+    <div id="receiptBox" class="receipt unpaid">
+      <div class="r-top">
+        <div class="r-logo" id="rLogo">CD</div>
+        <div class="r-mid">
+          <div class="r-store" id="rStore">CD متجر CD</div>
+          <div class="r-meta" id="rMeta">وصل</div>
+        </div>
+        <div class="r-status" id="rStatusBadge">—</div>
+      </div>
 
-      <div class="hr"></div>
-      <div class="pay" id="rPayTitle">طرق الدفع</div>
-      <ul id="rPayList"></ul>
+      <div class="r-body">
+        <div id="rData"></div>
 
-      <div class="hr"></div>
-      <div class="foot" id="rFoot"></div>
-      <div class="qr-wrap"><div id="rQR"></div></div>
+        <div class="r-sep"></div>
+
+        <div class="r-head" id="rPayTitle">طرق الدفع</div>
+        <ul id="rPayList" class="r-paylist"></ul>
+
+        <div class="r-sep"></div>
+
+        <div class="r-foot" id="rFoot"></div>
+        <div class="qr-wrap"><div id="rQR"></div></div>
+      </div>
     </div>
   </div>
 
@@ -788,12 +930,35 @@
     }
 
     // =============================
+    // Polyfills / Helpers
+    // =============================
+    function cloneObj(o){
+      try{
+        if(typeof structuredClone === "function") return structuredClone(o);
+      }catch(e){}
+      return JSON.parse(JSON.stringify(o));
+    }
+
+    function escapeHtml(str){
+      return String(str ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#39;");
+    }
+
+    // =============================
     // SETTINGS (yours)
     // =============================
     const DEFAULT_SETTINGS = {
       storeName: "CD متجر CD",
       whatsappOwner: "07728257333",
       instagramUrl: "https://www.instagram.com/8j_37?igsh=ZDl2Ym91dmt1OGgy",
+
+      // ✅ جديد
+      logoDataUrl: "",
+      superKeyIconDataUrl: "",
 
       theme: "system",
       accent: "#2563eb",
@@ -831,6 +996,9 @@
 
       services: [
         { name:"ChatGPT Plus", prices:{ "1":15000, "3":45000, "12":180000 } },
+        { name:"ChatGPT Pro",  prices:{ "1":15000, "3":45000, "12":180000 } },
+        { name:"Gemini",       prices:{ "1":15000, "3":45000, "12":180000 } },
+
         { name:"Canva Pro",    prices:{ "1":15000, "3":45000, "12":180000 } },
         { name:"CapCut Pro",   prices:{ "1":15000, "3":45000, "12":180000 } },
         { name:"YouTube",      prices:{ "1":15000, "3":45000, "12":180000 } }
@@ -913,8 +1081,13 @@
       if(Number.isFinite(x)) return Math.max(0, Math.min(14, Math.floor(x)));
       return 1;
     }
+    function timeHM(ts){
+      try{
+        return new Date(ts).toLocaleTimeString("ar-IQ", { hour:"2-digit", minute:"2-digit" });
+      }catch(e){ return ""; }
+    }
 
-    let settings = deepMerge(structuredClone(DEFAULT_SETTINGS), load(K_SETTINGS, {}));
+    let settings = deepMerge(cloneObj(DEFAULT_SETTINGS), load(K_SETTINGS, {}));
     let customers = load(K_CUSTOMERS, []);
     let sales = load(K_SALES, []);
     let activity = load(K_ACTIVITY, []);
@@ -930,7 +1103,7 @@
         for(const k of LEGACY.settings){
           const v = load(k, null);
           if(v && typeof v === "object"){
-            settings = deepMerge(structuredClone(DEFAULT_SETTINGS), v);
+            settings = deepMerge(cloneObj(DEFAULT_SETTINGS), v);
             save(K_SETTINGS, settings);
             break;
           }
@@ -972,6 +1145,36 @@
         finalTheme = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
       }
       document.documentElement.setAttribute("data-theme", finalTheme);
+    }
+
+    function logoText(){
+      const s = String(settings?.storeName || "").trim();
+      const latin = (s.match(/[A-Za-z0-9]/g) || []).join("");
+      if(latin.length >= 2) return latin.slice(0,2).toUpperCase();
+      if(s.length >= 2) return s.slice(0,2);
+      return "CD";
+    }
+
+    function setLogoInto(el){
+      if(!el) return;
+      el.innerHTML = "";
+      if(settings.logoDataUrl){
+        const img = document.createElement("img");
+        img.src = settings.logoDataUrl;
+        img.alt = "logo";
+        el.appendChild(img);
+      }else{
+        el.textContent = logoText();
+      }
+    }
+
+    function applyBrand(){
+      const t = settings.storeName || DEFAULT_SETTINGS.storeName;
+      const nameEl = document.getElementById("uiStoreName");
+      if(nameEl) nameEl.textContent = t;
+
+      const logoEl = document.getElementById("uiLogo");
+      if(logoEl) setLogoInto(logoEl);
     }
 
     function sumIncomeAll(){
@@ -1017,12 +1220,13 @@
 
     function normalizeServices(){
       if(!Array.isArray(settings.services) || settings.services.length===0){
-        settings.services = structuredClone(DEFAULT_SETTINGS.services);
+        settings.services = cloneObj(DEFAULT_SETTINGS.services);
       }
     }
     function renderServicesSelect(){
       normalizeServices();
       const sel = document.getElementById("fService");
+      if(!sel) return;
       const prev = sel.value;
       sel.innerHTML = "";
       settings.services.forEach(s=>{
@@ -1065,6 +1269,16 @@
       document.getElementById("fEnd").value = ymd(end);
     }
 
+    function renderAddInit(){
+      renderServicesSelect();
+      const startEl = document.getElementById("fStart");
+      if(startEl && !startEl.value) startEl.value = ymd();
+      calcEnd();
+      const priceEl = document.getElementById("fPrice");
+      if(priceEl && !priceEl.dataset.auto) priceEl.dataset.auto = "1";
+      applyServiceDefaults();
+    }
+
     function addCustomer(){
       const name = (document.getElementById("fName").value||"").trim();
       const phone = (document.getElementById("fPhone").value||"").trim();
@@ -1082,6 +1296,8 @@
         durationMonths: dm,
         start, end, price,
         paid: false, paidAt: null,
+        paidMethod: null,
+        paidNote: "",
         remindedEnd: null,
         vip: (document.getElementById("fVip").value === "yes"),
         note: (document.getElementById("fNote").value||"").trim(),
@@ -1132,81 +1348,63 @@
       renderSubs();
     }
 
-    function togglePaid(id){
-      const i = customers.findIndex(x=>x.id===id);
-      if(i<0) return;
-      const c = customers[i];
+    // =============================
+    // Modal / Toast
+    // =============================
+    function showModal(html){
+      const m = document.getElementById("modal");
+      const b = document.getElementById("modalBody");
+      b.innerHTML = html;
+      m.style.display = "flex";
+    }
+    function hideModal(){
+      const m = document.getElementById("modal");
+      m.style.display = "none";
+      document.getElementById("modalBody").innerHTML = "";
+    }
+    function closeModal(ev){
+      if(ev && ev.target && ev.target.id === "modal") hideModal();
+    }
 
-      if(!c.paid){
-        c.paid = true;
-        c.paidAt = nowISO();
-        addActivity("pay", `تم تسجيل دفع: ${c.name}`, Number(c.price||0));
-        save(K_CUSTOMERS, customers);
-        showToast("تم", "تم تسجيل الدفع");
+    let toastTimer = null;
+    function showToast(title, body, actions=null, timeout=3000){
+      const el = document.getElementById("toast");
+      const t = document.getElementById("toastT");
+      const b = document.getElementById("toastB");
+      const arow = document.getElementById("toastActions");
+
+      t.textContent = title || "—";
+      b.textContent = body || "—";
+
+      arow.innerHTML = "";
+      if(actions && actions.length){
+        arow.style.display = "flex";
+        actions.forEach(x=>{
+          const btn = document.createElement("button");
+          btn.className = "tbtn";
+          btn.textContent = x.label || "زر";
+          btn.onclick = ()=>{ try{ if(x.action) x.action(); }catch(e){} };
+          arow.appendChild(btn);
+        });
       }else{
-        c.paid = false;
-        c.paidAt = null;
-        addActivity("unpay", `تم إلغاء الدفع: ${c.name}`, Number(c.price||0));
-        save(K_CUSTOMERS, customers);
-        showToast("تم", "تم إلغاء الدفع");
+        arow.style.display = "none";
       }
-      renderHome(); renderSubs();
+
+      el.style.display = "block";
+      clearTimeout(toastTimer);
+      if(timeout && timeout > 0){
+        toastTimer = setTimeout(hideToast, timeout);
+      }
     }
-
-    function confirmRenew(id){
-      const i = customers.findIndex(x=>x.id===id);
-      if(i<0) return;
-      const c = customers[i];
-      const dm = Math.max(1, Number(c.durationMonths||1));
-
-      const start = parseYMD(ymd());
-      const end = new Date(start.getFullYear(), start.getMonth()+dm, start.getDate());
-
-      c.start = ymd(start);
-      c.end = ymd(end);
-      c.paid = false;
-      c.paidAt = null;
-      c.remindedEnd = null;
-
-      save(K_CUSTOMERS, customers);
-      addActivity("renew", `تم تجديد الاشتراك: ${c.name}`, null);
-
-      hideModal();
-      showToast("تم", "تم تجديد الاشتراك");
-      renderHome(); renderSubs();
-    }
-
-    function deleteCustomer(id){
-      const i = customers.findIndex(x=>x.id===id);
-      if(i<0) return;
-      if(!confirm("حذف الزبون؟")) return;
-
-      lastDeleted = customers[i];
-      customers.splice(i,1);
-      save(K_CUSTOMERS, customers);
-      addActivity("del", `تم حذف: ${lastDeleted.name}`, null);
-
-      hideModal();
-      renderHome(); renderSubs();
-
-      showToast("تم الحذف", "يمكنك التراجع خلال ثواني", [
-        { label:"تراجع", action: undoDelete }
-      ], 6500);
-    }
-
-    function undoDelete(){
-      if(!lastDeleted) return;
-      customers.unshift(lastDeleted);
-      save(K_CUSTOMERS, customers);
-      addActivity("undo", `تم التراجع عن الحذف: ${lastDeleted.name}`, null);
-      lastDeleted = null;
-      hideToast();
-      renderHome(); renderSubs();
-      showToast("تم", "تم التراجع عن الحذف");
+    function hideToast(){
+      const el = document.getElementById("toast");
+      el.style.display = "none";
+      document.getElementById("toastActions").style.display = "none";
+      document.getElementById("toastActions").innerHTML = "";
     }
 
     // =============================
-    // WHATSAPP (يُفتح من Kodular عبر OPEN_URL)
+    // WhatsApp
     // =============================
     function sendWA(id, mode="auto"){
       const c = customers.find(x=>x.id===id);
@@ -1248,6 +1446,147 @@
       openExternal(url);
     }
 
+    // =============================
+    // Payments: choose method + (super key icon in receipt)
+    // =============================
+    function isSuperKeyMethod(method){
+      return /سوبر\s*كي|سوبركي|super\s*key/i.test(String(method||""));
+    }
+    function superKeyIconHtml(){
+      if(settings.superKeyIconDataUrl){
+        return ` <img class="sk-icon" src="${settings.superKeyIconDataUrl}" alt="SK">`;
+      }
+      return ` <span class="sk-pill">SK</span>`;
+    }
+
+    function togglePaid(id){
+      const i = customers.findIndex(x=>x.id===id);
+      if(i<0) return;
+      const c = customers[i];
+
+      if(!c.paid){
+        openPaidModal(id);
+        return;
+      }
+
+      c.paid = false;
+      c.paidAt = null;
+      c.paidMethod = null;
+      c.paidNote = "";
+      addActivity("unpay", `تم إلغاء الدفع: ${c.name}`, Number(c.price||0));
+      save(K_CUSTOMERS, customers);
+      showToast("تم", "تم إلغاء الدفع");
+      renderHome(); renderSubs();
+    }
+
+    function openPaidModal(id){
+      const c = customers.find(x=>x.id===id);
+      if(!c) return;
+
+      const methods = Array.isArray(settings.paymentMethods) && settings.paymentMethods.length
+        ? settings.paymentMethods
+        : DEFAULT_SETTINGS.paymentMethods;
+
+      const opts = methods.map(m=>`<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join("");
+
+      const html = `
+        <h3>تسجيل الدفع</h3>
+        <p class="subtxt">اختر طريقة الدفع لتظهر في الوصل (ويظهر شعار سوبر كي تلقائياً إذا اخترته).</p>
+
+        <label>طريقة الدفع</label>
+        <select id="pMethod">${opts}</select>
+
+        <div style="margin-top:10px;">
+          <label>ملاحظة (اختياري)</label>
+          <input id="pNote" placeholder="مثال: رقم الحوالة أو ملاحظة"/>
+        </div>
+
+        <div class="grid cols-2" style="margin-top:12px;">
+          <button class="btn success full" onclick="confirmPaid('${id}')">تأكيد</button>
+          <button class="btn soft full" onclick="hideModal()">إلغاء</button>
+        </div>
+      `;
+      showModal(html);
+    }
+
+    function confirmPaid(id){
+      const i = customers.findIndex(x=>x.id===id);
+      if(i<0) return;
+      const c = customers[i];
+
+      c.paid = true;
+      c.paidAt = nowISO();
+      c.paidMethod = document.getElementById("pMethod").value || null;
+      c.paidNote = (document.getElementById("pNote").value||"").trim();
+
+      addActivity("pay", `تم تسجيل دفع: ${c.name}`, Number(c.price||0));
+      save(K_CUSTOMERS, customers);
+
+      hideModal();
+      showToast("تم", "تم تسجيل الدفع");
+      renderHome(); renderSubs();
+    }
+
+    // =============================
+    // Renew / Delete / Undo
+    // =============================
+    function confirmRenew(id){
+      const i = customers.findIndex(x=>x.id===id);
+      if(i<0) return;
+      const c = customers[i];
+      const dm = Math.max(1, Number(c.durationMonths||1));
+
+      const start = parseYMD(ymd());
+      const end = new Date(start.getFullYear(), start.getMonth()+dm, start.getDate());
+
+      c.start = ymd(start);
+      c.end = ymd(end);
+      c.paid = false;
+      c.paidAt = null;
+      c.paidMethod = null;
+      c.paidNote = "";
+      c.remindedEnd = null;
+
+      save(K_CUSTOMERS, customers);
+      addActivity("renew", `تم تجديد الاشتراك: ${c.name}`, null);
+
+      hideModal();
+      showToast("تم", "تم تجديد الاشتراك");
+      renderHome(); renderSubs();
+    }
+
+    function deleteCustomer(id){
+      const i = customers.findIndex(x=>x.id===id);
+      if(i<0) return;
+      if(!confirm("حذف الزبون؟")) return;
+
+      lastDeleted = customers[i];
+      customers.splice(i,1);
+      save(K_CUSTOMERS, customers);
+      addActivity("del", `تم حذف: ${lastDeleted.name}`, null);
+
+      hideModal();
+      renderHome(); renderSubs();
+
+      showToast("تم الحذف", "يمكنك التراجع خلال ثواني", [
+        { label:"تراجع", action: undoDelete }
+      ], 6500);
+    }
+
+    function undoDelete(){
+      if(!lastDeleted) return;
+      customers.unshift(lastDeleted);
+      save(K_CUSTOMERS, customers);
+      addActivity("undo", `تم التراجع عن الحذف: ${lastDeleted.name}`, null);
+      lastDeleted = null;
+      hideToast();
+      renderHome(); renderSubs();
+      showToast("تم", "تم التراجع عن الحذف");
+    }
+
+    // =============================
+    // Quick sale
+    // =============================
     function openQuickSale(){
       const html = `
         <h3>بيع سريع</h3>
@@ -1286,6 +1625,9 @@
       showToast("تم", "تم تسجيل البيع");
     }
 
+    // =============================
+    // Menu / Backup / Reset
+    // =============================
     function openMenu(){
       const body = `
         <h3>القائمة</h3>
@@ -1361,7 +1703,7 @@
       const txt = await f.text();
       try{
         const pack = JSON.parse(txt);
-        if(pack.settings) settings = deepMerge(structuredClone(DEFAULT_SETTINGS), pack.settings);
+        if(pack.settings) settings = deepMerge(cloneObj(DEFAULT_SETTINGS), pack.settings);
         if(Array.isArray(pack.customers)) customers = pack.customers;
         if(Array.isArray(pack.sales)) sales = pack.sales;
         if(Array.isArray(pack.activity)) activity = pack.activity;
@@ -1372,6 +1714,7 @@
         save(K_ACTIVITY, activity);
 
         applyTheme();
+        applyBrand();
         hideModal();
         showToast("تم", "تم الاستيراد بنجاح");
         renderAll();
@@ -1389,13 +1732,14 @@
       localStorage.removeItem(K_ACTIVITY);
       localStorage.removeItem(K_SCHEMA);
 
-      settings = structuredClone(DEFAULT_SETTINGS);
+      settings = cloneObj(DEFAULT_SETTINGS);
       customers = [];
       sales = [];
       activity = [];
       save(K_SCHEMA, "ok");
 
       applyTheme();
+      applyBrand();
       hideModal();
       showToast("تم", "تم تصفير البيانات");
       renderAll();
@@ -1433,7 +1777,120 @@
       return String(txt||"").split("\n").map(x=>x.trim()).filter(Boolean);
     }
 
+    // =============================
+    // Settings: logo + super key icon upload
+    // =============================
+    let tmpLogoDataUrl = null;
+    let tmpSuperKeyIconDataUrl = null;
+
+    function fileToDataURLResized(file, maxSide=256){
+      return new Promise((resolve, reject)=>{
+        if(!file) return resolve("");
+        const reader = new FileReader();
+        reader.onload = ()=>{
+          const img = new Image();
+          img.onload = ()=>{
+            const ratio = Math.min(1, maxSide / Math.max(img.width, img.height));
+            const w = Math.max(1, Math.round(img.width * ratio));
+            const h = Math.max(1, Math.round(img.height * ratio));
+
+            const canvas = document.createElement("canvas");
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+
+            let out = "";
+            try{ out = canvas.toDataURL("image/webp", 0.85); }catch(e){}
+            if(!out || out.startsWith("data:,")){
+              out = canvas.toDataURL("image/png");
+            }
+            resolve(out);
+          };
+          img.onerror = ()=> reject(new Error("bad image"));
+          img.src = reader.result;
+        };
+        reader.onerror = ()=> reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderSettingsPreviews(){
+      const logoPrev = document.getElementById("sLogoPreview");
+      if(logoPrev){
+        const src = (tmpLogoDataUrl !== null) ? tmpLogoDataUrl : (settings.logoDataUrl || "");
+        logoPrev.innerHTML = "";
+        if(src){
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = "logo";
+          logoPrev.appendChild(img);
+        }else{
+          logoPrev.textContent = logoText();
+        }
+      }
+
+      const skImg = document.getElementById("sSkPreview");
+      const skTxt = document.getElementById("sSkPrevTxt");
+      const skSrc = (tmpSuperKeyIconDataUrl !== null) ? tmpSuperKeyIconDataUrl : (settings.superKeyIconDataUrl || "");
+      if(skImg && skTxt){
+        if(skSrc){
+          skImg.src = skSrc;
+          skImg.style.display = "inline-block";
+          skTxt.textContent = "موجودة";
+        }else{
+          skImg.removeAttribute("src");
+          skImg.style.display = "none";
+          skTxt.textContent = "لا يوجد";
+        }
+      }
+    }
+
+    function clearTempLogo(){
+      tmpLogoDataUrl = "";
+      renderSettingsPreviews();
+    }
+    function clearTempSK(){
+      tmpSuperKeyIconDataUrl = "";
+      renderSettingsPreviews();
+    }
+
+    function wireSettingsImageInputs(){
+      const logoFile = document.getElementById("sLogoFile");
+      if(logoFile){
+        logoFile.onchange = async ()=>{
+          const f = logoFile.files && logoFile.files[0];
+          if(!f) return;
+          try{
+            tmpLogoDataUrl = await fileToDataURLResized(f, 256);
+            renderSettingsPreviews();
+            showToast("تم", "تم اختيار الشعار (سيُحفظ عند الضغط على حفظ)");
+          }catch(e){
+            alert("تعذر قراءة صورة الشعار");
+          }
+        };
+      }
+
+      const skFile = document.getElementById("sSkFile");
+      if(skFile){
+        skFile.onchange = async ()=>{
+          const f = skFile.files && skFile.files[0];
+          if(!f) return;
+          try{
+            tmpSuperKeyIconDataUrl = await fileToDataURLResized(f, 72);
+            renderSettingsPreviews();
+            showToast("تم", "تم اختيار علامة سوبر كي (ستظهر في الوصل)");
+          }catch(e){
+            alert("تعذر قراءة صورة علامة سوبر كي");
+          }
+        };
+      }
+    }
+
     function openSettings(){
+      tmpLogoDataUrl = null;
+      tmpSuperKeyIconDataUrl = null;
+
       const body = `
         <h3>الإعدادات</h3>
         <p class="subtxt">كل شيء هنا بسيط وواضح. تستطيع تغيير الخدمات وطرق الدفع والواجهة.</p>
@@ -1453,6 +1910,36 @@
               <input id="sIG" value="${escapeHtml(settings.instagramUrl)}"/>
             </div>
           </div>
+        </div>
+
+        <div class="card" style="box-shadow:none;">
+          <div style="font-weight:900; margin-bottom:8px;">الشعار</div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <div class="avatar" id="sLogoPreview" style="width:56px;height:56px;border-radius:18px;">${escapeHtml(logoText())}</div>
+            <div class="muted">اختر صورة شعار. إن لم ترفع صورة سيظهر شعار بالحروف.</div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <input id="sLogoFile" type="file" accept="image/*"/>
+          </div>
+
+          <button class="btn soft full" style="margin-top:10px;" onclick="clearTempLogo()">حذف الشعار</button>
+        </div>
+
+        <div class="card" style="box-shadow:none;">
+          <div style="font-weight:900; margin-bottom:8px;">علامة سوبر كي (بالوصل)</div>
+          <div class="muted">تظهر صغيرة بجانب طريقة الدفع عندما تكون (سوبر كي).</div>
+
+          <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+            <img id="sSkPreview" alt="SK" style="width:26px;height:26px;object-fit:contain;border:1px solid var(--line);border-radius:10px;padding:4px;background:var(--card);display:none;" />
+            <span class="muted" id="sSkPrevTxt">لا يوجد</span>
+          </div>
+
+          <div style="margin-top:10px;">
+            <input id="sSkFile" type="file" accept="image/*"/>
+          </div>
+
+          <button class="btn soft full" style="margin-top:10px;" onclick="clearTempSK()">حذف العلامة</button>
         </div>
 
         <div class="card" style="box-shadow:none;">
@@ -1508,7 +1995,11 @@
         </div>
       `;
       showModal(body);
-      setTimeout(()=>{ document.getElementById("sTheme").value = settings.theme || "system"; }, 0);
+      setTimeout(()=>{
+        document.getElementById("sTheme").value = settings.theme || "system";
+        wireSettingsImageInputs();
+        renderSettingsPreviews();
+      }, 0);
     }
 
     function saveSettings(){
@@ -1523,143 +2014,250 @@
       const parsedServices = parseServicesText(document.getElementById("sServices").value || "");
       if(parsedServices.length) settings.services = parsedServices;
 
-      const pay = parsePaymentText(document.getElementById("sPay").value || "");
-      settings.paymentMethods = pay.length ? pay : structuredClone(DEFAULT_SETTINGS.paymentMethods);
+      const parsedPay = parsePaymentText(document.getElementById("sPay").value || "");
+      if(parsedPay.length) settings.paymentMethods = parsedPay;
 
-      settings.waTemplates = settings.waTemplates || {};
-      settings.waTemplates.reminder = document.getElementById("sTplR").value || DEFAULT_SETTINGS.waTemplates.reminder;
-      settings.waTemplates.status   = document.getElementById("sTplS").value || DEFAULT_SETTINGS.waTemplates.status;
-      settings.waTemplates.thanks   = document.getElementById("sTplT").value || DEFAULT_SETTINGS.waTemplates.thanks;
+      settings.waTemplates = {
+        reminder: document.getElementById("sTplR").value || DEFAULT_SETTINGS.waTemplates.reminder,
+        status:   document.getElementById("sTplS").value || DEFAULT_SETTINGS.waTemplates.status,
+        thanks:   document.getElementById("sTplT").value || DEFAULT_SETTINGS.waTemplates.thanks
+      };
+
+      if(tmpLogoDataUrl !== null) settings.logoDataUrl = tmpLogoDataUrl;
+      if(tmpSuperKeyIconDataUrl !== null) settings.superKeyIconDataUrl = tmpSuperKeyIconDataUrl;
+
+      tmpLogoDataUrl = null;
+      tmpSuperKeyIconDataUrl = null;
 
       save(K_SETTINGS, settings);
 
       applyTheme();
-      renderAll();
+      applyBrand();
+      renderServicesSelect();
 
       hideModal();
       showToast("تم", "تم حفظ الإعدادات");
+      renderAll();
     }
 
-    function openReminders(){
-      const d = getRemindDays();
-      const list = customers
-        .map(c=> ({ c, st: statusOf(c) }))
-        .filter(x=> x.st.dl !== null && x.st.dl >= 0 && x.st.dl <= d)
-        .sort((a,b)=> (a.st.dl - b.st.dl));
+    // =============================
+    // Receipt: fill + export image
+    // =============================
+    function fillReceiptForCustomer(c){
+      const box = document.getElementById("receiptBox");
+      if(!box) return;
 
-      let html = `<h3>قريب الانتهاء</h3>
-        <p class="subtxt">الاشتراكات التي تنتهي خلال ${d} يوم.</p>`;
+      box.classList.toggle("paid", !!c.paid);
+      box.classList.toggle("unpaid", !c.paid);
 
-      if(list.length===0){
-        html += `<div class="card" style="box-shadow:none; margin:0;">
-          <b>لا توجد عناصر</b>
-          <div class="muted" style="margin-top:6px;">لا يوجد اشتراكات ضمن الفترة المحددة.</div>
-        </div>
-        <div class="grid cols-2" style="margin-top:12px;">
-          <button class="btn soft full" onclick="openSettings()">تغيير الفترة</button>
-          <button class="btn soft full" onclick="hideModal()">إغلاق</button>
-        </div>`;
-        showModal(html);
-        return;
+      const store = settings.storeName || DEFAULT_SETTINGS.storeName;
+      document.getElementById("rStore").textContent = store;
+
+      const dt = new Date();
+      const time = dt.toLocaleTimeString("ar-IQ", { hour:"2-digit", minute:"2-digit" });
+      document.getElementById("rMeta").textContent = `وصل اشتراك • ${ymd()} • ${time}`;
+
+      const rLogo = document.getElementById("rLogo");
+      if(rLogo){
+        rLogo.innerHTML = "";
+        if(settings.logoDataUrl){
+          const img = document.createElement("img");
+          img.src = settings.logoDataUrl;
+          img.alt = "logo";
+          rLogo.appendChild(img);
+        }else{
+          rLogo.textContent = logoText();
+        }
       }
 
-      list.slice(0, 50).forEach(x=>{
-        const c = x.c, st = x.st;
-        html += `
-          <div class="card" style="box-shadow:none;">
-            <b>${escapeHtml(c.name)}</b>
-            <div class="muted" style="margin-top:6px;">${escapeHtml(c.service)} | ينتهي: <b>${escapeHtml(c.end)}</b> | المتبقي: <b>${daysLeftHuman(st.dl)}</b></div>
-            <div class="grid cols-2" style="margin-top:10px;">
-              <button class="btn primary full" onclick="sendWA('${c.id}','reminder')">إرسال تذكير</button>
-              <button class="btn soft full" onclick="sendWA('${c.id}','status')">إرسال حالة</button>
-            </div>
-          </div>
+      const st = statusOf(c);
+      const badge = document.getElementById("rStatusBadge");
+      if(badge){
+        badge.textContent = c.paid ? "مدفوع ✅" : "غير مدفوع";
+      }
+
+      const dataEl = document.getElementById("rData");
+      if(dataEl){
+        dataEl.innerHTML = `
+          <div class="r-kv"><span>الزبون</span><b>${escapeHtml(c.name)}</b></div>
+          <div class="r-kv"><span>الخدمة</span><b>${escapeHtml(c.service)}</b></div>
+          <div class="r-kv"><span>بدء</span><b>${escapeHtml(c.start)}</b></div>
+          <div class="r-kv"><span>انتهاء</span><b>${escapeHtml(c.end)}</b></div>
+          <div class="r-kv"><span>المتبقي</span><b>${escapeHtml(daysLeftHuman(st.dl))}</b></div>
+          <div class="r-kv total"><span>المبلغ</span><b>${escapeHtml(money(c.price))}</b></div>
         `;
-      });
+      }
 
-      html += `<div class="grid cols-2" style="margin-top:12px;">
-        <button class="btn soft full" onclick="openSettings()">إعدادات</button>
-        <button class="btn soft full" onclick="hideModal()">إغلاق</button>
-      </div>`;
+      const payTitle = document.getElementById("rPayTitle");
+      const payList = document.getElementById("rPayList");
+      if(payTitle) payTitle.textContent = c.paid ? "طريقة الدفع" : "طرق الدفع";
 
-      showModal(html);
+      if(payList){
+        if(c.paid){
+          const m = c.paidMethod || "—";
+          const icon = isSuperKeyMethod(m) ? superKeyIconHtml() : "";
+          const note = c.paidNote ? `<div class="pm-note">${escapeHtml(c.paidNote)}</div>` : "";
+          payList.innerHTML = `<li><span class="pm">${escapeHtml(m)}${icon}</span>${note}</li>`;
+        }else{
+          const methods = Array.isArray(settings.paymentMethods) ? settings.paymentMethods : DEFAULT_SETTINGS.paymentMethods;
+          payList.innerHTML = methods.map(m=>{
+            const icon = isSuperKeyMethod(m) ? superKeyIconHtml() : "";
+            return `<li><span class="pm">${escapeHtml(m)}${icon}</span></li>`;
+          }).join("");
+        }
+      }
+
+      const foot = document.getElementById("rFoot");
+      if(foot){
+        foot.textContent =
+`شكراً لتعاملكم معنا 💙
+للاستفسار: واتساب ${cleanPhone(settings.whatsappOwner)}
+انستقرام: ${settings.instagramUrl}`;
+      }
+
+      const qrEl = document.getElementById("rQR");
+      if(qrEl){
+        qrEl.innerHTML = "";
+        const qrData =
+`Store: ${store}
+Customer: ${c.name}
+Service: ${c.service}
+Start: ${c.start}
+End: ${c.end}
+Amount: ${c.price}
+Paid: ${c.paid ? "yes" : "no"}
+Method: ${c.paidMethod || ""}
+Issued: ${ymd()} ${time}`;
+        new QRCode(qrEl, { text: qrData, width: 120, height: 120, correctLevel: QRCode.CorrectLevel.M });
+      }
     }
 
-    function openMore(id){
+    async function openReceipt(id){
       const c = customers.find(x=>x.id===id);
       if(!c) return;
 
-      const st = statusOf(c);
+      fillReceiptForCustomer(c);
+      await new Promise(r=>setTimeout(r, 80)); // allow QR to render
+
+      const canvas = await html2canvas(document.getElementById("receiptBox"), { scale: 2, backgroundColor: "#ffffff" });
+      const imgUrl = canvas.toDataURL("image/png");
+      window.__lastReceipt = imgUrl;
 
       const body = `
-        <h3>${escapeHtml(c.name)}</h3>
-        <p class="subtxt">${escapeHtml(c.service)} | ينتهي: ${escapeHtml(c.end)} | المتبقي: ${daysLeftHuman(st.dl)}</p>
+        <h3>وصل ${escapeHtml(c.name)}</h3>
+        <p class="subtxt">صورة مرتبة جاهزة للحفظ/الإرسال.</p>
 
-        <div class="grid cols-2">
-          <button class="btn soft full" onclick="sendWA('${c.id}','auto')">واتساب</button>
-          <button class="btn ${c.paid ? "soft":"success"} full" onclick="togglePaid('${c.id}')">${c.paid ? "إلغاء دفع":"تسجيل دفع"}</button>
+        <div style="text-align:center;">
+          <img src="${imgUrl}" style="width:100%;max-width:420px;border-radius:18px;border:1px solid var(--line);" />
         </div>
 
-        <div class="grid cols-2" style="margin-top:10px;">
-          <button class="btn soft full" onclick="openEdit('${c.id}')">تعديل</button>
-          <button class="btn soft full" onclick="confirmRenew('${c.id}')">تجديد</button>
-        </div>
-
-        <div class="grid cols-2" style="margin-top:10px;">
-          <button class="btn soft full" onclick="snapReceipt('${c.id}')">وصل</button>
-          <button class="btn danger full" onclick="deleteCustomer('${c.id}')">حذف</button>
-        </div>
-
-        <div class="grid cols-2" style="margin-top:10px;">
+        <div class="grid cols-2" style="margin-top:12px;">
+          <button class="btn primary full" onclick="downloadDataUrl(window.__lastReceipt, 'receipt-${ymd()}.png')">تحميل</button>
           <button class="btn soft full" onclick="hideModal()">إغلاق</button>
-          <button class="btn primary full" onclick="sendWA('${c.id}','thanks')">رسالة شكر الدفع</button>
         </div>
       `;
       showModal(body);
     }
 
-    function openEdit(id){
+    function downloadDataUrl(dataUrl, filename){
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = filename || `receipt-${ymd()}.png`;
+      a.click();
+    }
+
+    // =============================
+    // Subscribers: render + actions modal + edit
+    // =============================
+    function badgeHtml(text, cls){
+      return `<span class="badge ${cls||""}">${escapeHtml(text)}</span>`;
+    }
+
+    function openCustomerActions(id){
       const c = customers.find(x=>x.id===id);
       if(!c) return;
+      const st = statusOf(c);
 
       const body = `
-        <h3>تعديل</h3>
-        <p class="subtxt">تعديل بيانات الزبون بشكل سريع.</p>
+        <h3>${escapeHtml(c.name)}</h3>
+        <p class="subtxt">اختر العملية المطلوبة.</p>
 
-        <label>الاسم</label>
-        <input id="eName" value="${escapeHtml(c.name)}"/>
-
-        <div style="margin-top:10px;">
-          <label>الرقم</label>
-          <input id="ePhone" value="${escapeHtml(c.phone)}"/>
+        <div class="grid cols-2">
+          <button class="btn soft full" onclick="sendWA('${id}','status')">واتساب (حالة)</button>
+          <button class="btn soft full" onclick="sendWA('${id}','reminder')">واتساب (تذكير)</button>
         </div>
 
-        <div class="row2" style="margin-top:10px;">
+        <div class="grid cols-2" style="margin-top:10px;">
+          <button class="btn soft full" onclick="sendWA('${id}','thanks')">شكر الدفع</button>
+          <button class="btn soft full" onclick="openReceipt('${id}')">إظهار الوصل</button>
+        </div>
+
+        <div class="grid cols-2" style="margin-top:10px;">
+          <button class="btn primary full" onclick="openEditCustomer('${id}')">تعديل</button>
+          <button class="btn soft full" onclick="openConfirmRenew('${id}')">تجديد</button>
+        </div>
+
+        <div class="grid cols-2" style="margin-top:10px;">
+          <button class="btn danger full" onclick="deleteCustomer('${id}')">حذف</button>
+          <button class="btn soft full" onclick="hideModal()">إغلاق</button>
+        </div>
+      `;
+      showModal(body);
+    }
+
+    function openConfirmRenew(id){
+      const c = customers.find(x=>x.id===id);
+      if(!c) return;
+      const body = `
+        <h3>تجديد الاشتراك</h3>
+        <p class="subtxt">سيتم التجديد من اليوم بنفس مدة الاشتراك (${Number(c.durationMonths||1)} شهر).</p>
+        <div class="grid cols-2" style="margin-top:12px;">
+          <button class="btn primary full" onclick="confirmRenew('${id}')">تأكيد التجديد</button>
+          <button class="btn soft full" onclick="hideModal()">إلغاء</button>
+        </div>
+      `;
+      showModal(body);
+    }
+
+    function openEditCustomer(id){
+      const c = customers.find(x=>x.id===id);
+      if(!c) return;
+      normalizeServices();
+      const svcOpts = settings.services.map(s=>`<option value="${escapeHtml(s.name)}">${escapeHtml(s.name)}</option>`).join("");
+
+      const body = `
+        <h3>تعديل اشتراك</h3>
+        <p class="subtxt">عدّل البيانات ثم اضغط حفظ.</p>
+
+        <div class="row2">
           <div>
             <label>الخدمة</label>
-            <input id="eService" value="${escapeHtml(c.service)}"/>
+            <select id="eService">${svcOpts}</select>
           </div>
           <div>
-            <label>السعر</label>
-            <input id="ePrice" type="number" value="${Number(c.price||0)}"/>
+            <label>المدة</label>
+            <select id="eDuration" onchange="calcEditEnd()">
+              <option value="1">شهر</option>
+              <option value="3">3 أشهر</option>
+              <option value="12">سنة</option>
+            </select>
           </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label>اسم الزبون</label>
+          <input id="eName" />
+        </div>
+
+        <div style="margin-top:10px;">
+          <label>رقم الواتساب</label>
+          <input id="ePhone" />
         </div>
 
         <div class="row2" style="margin-top:10px;">
           <div>
-            <label>البداية</label>
-            <input id="eStart" type="date" value="${escapeHtml(c.start)}"/>
-          </div>
-          <div>
-            <label>النهاية</label>
-            <input id="eEnd" type="date" value="${escapeHtml(c.end)}"/>
-          </div>
-        </div>
-
-        <div class="row2" style="margin-top:10px;">
-          <div>
-            <label>المدة (شهر)</label>
-            <input id="eDur" type="number" value="${Number(c.durationMonths||1)}"/>
+            <label>المبلغ (دينار)</label>
+            <input id="ePrice" type="number" />
           </div>
           <div>
             <label>VIP</label>
@@ -1670,350 +2268,304 @@
           </div>
         </div>
 
+        <div class="row2" style="margin-top:10px;">
+          <div>
+            <label>تاريخ البدء</label>
+            <input id="eStart" type="date" onchange="calcEditEnd()" />
+          </div>
+          <div>
+            <label>تاريخ النهاية</label>
+            <input id="eEnd" type="date" />
+          </div>
+        </div>
+
         <div style="margin-top:10px;">
           <label>ملاحظة</label>
-          <input id="eNote" value="${escapeHtml(c.note||"")}"/>
+          <textarea id="eNote"></textarea>
         </div>
 
         <div class="grid cols-2" style="margin-top:12px;">
-          <button class="btn primary full" onclick="saveEdit('${c.id}')">حفظ</button>
-          <button class="btn soft full" onclick="openMore('${c.id}')">رجوع</button>
+          <button class="btn primary full" onclick="saveEditCustomer('${id}')">حفظ</button>
+          <button class="btn soft full" onclick="hideModal()">إغلاق</button>
         </div>
       `;
       showModal(body);
-      setTimeout(()=>{ document.getElementById("eVip").value = c.vip ? "yes":"no"; }, 0);
+
+      setTimeout(()=>{
+        document.getElementById("eService").value = c.service;
+        document.getElementById("eDuration").value = String(Number(c.durationMonths||1));
+        document.getElementById("eName").value = c.name || "";
+        document.getElementById("ePhone").value = c.phone || "";
+        document.getElementById("ePrice").value = Number(c.price||0);
+        document.getElementById("eVip").value = c.vip ? "yes" : "no";
+        document.getElementById("eStart").value = c.start || ymd();
+        document.getElementById("eEnd").value = c.end || ymd();
+        document.getElementById("eNote").value = c.note || "";
+      }, 0);
     }
 
-    function saveEdit(id){
+    function calcEditEnd(){
+      const start = parseYMD(document.getElementById("eStart").value);
+      const dm = Number(document.getElementById("eDuration").value||1);
+      if(!start) return;
+      const end = new Date(start.getFullYear(), start.getMonth()+dm, start.getDate());
+      document.getElementById("eEnd").value = ymd(end);
+    }
+
+    function saveEditCustomer(id){
       const i = customers.findIndex(x=>x.id===id);
       if(i<0) return;
 
-      customers[i].name = (document.getElementById("eName").value||"").trim();
-      customers[i].phone = (document.getElementById("ePhone").value||"").trim();
-      customers[i].service = (document.getElementById("eService").value||"").trim();
-      customers[i].price = Number(document.getElementById("ePrice").value||0);
-      customers[i].start = document.getElementById("eStart").value || customers[i].start;
-      customers[i].end = document.getElementById("eEnd").value || customers[i].end;
-      customers[i].durationMonths = Math.max(1, Number(document.getElementById("eDur").value||1));
-      customers[i].vip = (document.getElementById("eVip").value === "yes");
-      customers[i].note = (document.getElementById("eNote").value||"").trim();
+      const c = customers[i];
+      c.service = document.getElementById("eService").value || c.service;
+      c.durationMonths = Number(document.getElementById("eDuration").value||c.durationMonths||1);
+      c.name = (document.getElementById("eName").value||"").trim() || c.name;
+      c.phone = (document.getElementById("ePhone").value||"").trim() || c.phone;
+      c.price = Number(document.getElementById("ePrice").value||c.price||0);
+      c.vip = (document.getElementById("eVip").value === "yes");
+      c.start = document.getElementById("eStart").value || c.start;
+      c.end = document.getElementById("eEnd").value || c.end;
+      c.note = (document.getElementById("eNote").value||"").trim();
 
       save(K_CUSTOMERS, customers);
-      addActivity("edit", `تم تعديل بيانات: ${customers[i].name}`, null);
+      addActivity("edit", `تم تعديل اشتراك: ${c.name}`, null);
 
       hideModal();
-      renderHome();
-      renderSubs();
-      showToast("تم", "تم حفظ التعديلات");
+      showToast("تم", "تم حفظ التعديل");
+      renderHome(); renderSubs();
     }
 
-    // =============================
-    // RECEIPT (Kodular-friendly: عرض الصورة داخل Modal بدل تنزيل)
-    // =============================
-    async function snapReceipt(id){
-      const c = customers.find(x=>x.id===id);
-      if(!c) return;
+    function renderSubs(){
+      const q = (document.getElementById("qSub").value || "").trim().toLowerCase();
+      let list = customers.slice();
 
-      const dt = new Date();
-      const time = dt.toLocaleString("ar-IQ");
-
-      document.getElementById("rStore").innerText = settings.storeName;
-      document.getElementById("rMeta").innerText = `وصل - ${time}`;
-
-      document.getElementById("rData").innerHTML = `
-        <p>الاسم: <b>${escapeHtml(c.name)}</b></p>
-        <p>الخدمة: <b>${escapeHtml(c.service)}</b></p>
-        <p>الانتهاء: <b>${escapeHtml(c.end)}</b></p>
-        <p>المبلغ: <b>${money(c.price)}</b></p>
-        <p>الحالة: <b>${c.paid ? "مدفوع" : "غير مدفوع"}</b></p>
-      `;
-
-      const payList = document.getElementById("rPayList");
-      payList.innerHTML = "";
-      (settings.paymentMethods || []).forEach(x=>{
-        const li = document.createElement("li");
-        li.textContent = String(x||"");
-        payList.appendChild(li);
+      list = list.filter(c=>{
+        const st = statusOf(c);
+        if(filter==="active") return st.dl !== null && st.dl >= 0;
+        if(filter==="soon") return st.dl !== null && st.dl >= 0 && st.dl <= getRemindDays();
+        if(filter==="expired") return st.dl !== null && st.dl < 0;
+        if(filter==="unpaid") return !c.paid;
+        if(filter==="paid") return !!c.paid;
+        if(filter==="vip") return !!c.vip;
+        return true;
       });
 
-      const foot =
-`© ${settings.storeName} - جميع الحقوق محفوظة
-WhatsApp: ${settings.whatsappOwner}
-Instagram: ${settings.instagramUrl}`;
-      document.getElementById("rFoot").innerText = foot;
+      if(q){
+        list = list.filter(c=>{
+          const hay = `${c.name||""} ${c.phone||""} ${c.service||""} ${c.note||""}`.toLowerCase();
+          return hay.includes(q);
+        });
+      }
 
-      const qrBox = document.getElementById("rQR");
-      qrBox.innerHTML = "";
-      try{ new QRCode(qrBox, { text: settings.instagramUrl, width: 78, height: 78 }); }catch(e){}
+      document.getElementById("uiCountLine").textContent = `${list.length} / ${customers.length}`;
 
-      hideModal();
+      const box = document.getElementById("uiSubs");
+      if(list.length===0){
+        box.innerHTML = `<div class="card"><div class="muted">لا توجد نتائج.</div></div>`;
+        return;
+      }
 
-      const node = document.getElementById("receiptBox");
-      const canvas = await html2canvas(node, { scale: 2 });
-      const dataUrl = canvas.toDataURL("image/png");
+      const html = list.map(c=>{
+        const st = statusOf(c);
+        const cls = `${st.expired ? "expired": (st.soon ? "soon":"")} ${c.vip ? "vip":""}`.trim();
 
-      // بدل التنزيل: عرض داخل نافذة (يشتغل داخل WebView)
-      showModal(`
-        <h3>صورة الوصل</h3>
-        <p class="subtxt">اضغط مطوّل على الصورة للحفظ، أو خذ لقطة شاشة.</p>
-        <img src="${dataUrl}" style="width:100%;border-radius:16px;border:1px solid #e5e7eb"/>
-        <div class="grid cols-2" style="margin-top:12px;">
-          <button class="btn soft full" onclick="hideModal()">إغلاق</button>
-          <button class="btn primary full" onclick="openExternal('${dataUrl}')">فتح في المتصفح</button>
-        </div>
-      `);
+        let badges = "";
+        if(st.expired) badges += badgeHtml("منتهي", "bad");
+        else if(st.soon) badges += badgeHtml(`قريب (${daysLeftHuman(st.dl)})`, "warn");
+        else badges += badgeHtml("فعّال", "good");
+
+        badges += c.paid ? badgeHtml("مدفوع", "good") : badgeHtml("غير مدفوع", "bad");
+        if(c.vip) badges += badgeHtml("VIP", "purple");
+        if(c.remindedEnd && c.remindedEnd === c.end) badges += badgeHtml("تم التذكير", "");
+
+        const pm = c.paid ? (c.paidMethod || "—") : "—";
+
+        return `
+          <div class="sub ${cls}">
+            <div class="sub-top">
+              <div style="min-width:0;">
+                <div class="sub-name">${escapeHtml(c.name)}</div>
+                <div style="margin-top:8px;">${badges}</div>
+              </div>
+            </div>
+
+            <div class="sub-meta">
+              <div>الخدمة: <b>${escapeHtml(c.service)}</b></div>
+              <div>الانتهاء: <b>${escapeHtml(c.end)}</b> • ${escapeHtml(daysLeftHuman(st.dl))}</div>
+              <div>الرقم: <b dir="ltr">${escapeHtml(cleanPhone(c.phone))}</b></div>
+              <div>المبلغ: <b>${escapeHtml(money(c.price))}</b>${c.paid ? ` • الدفع: <b>${escapeHtml(pm)}</b>` : ""}</div>
+              ${c.note ? `<div>ملاحظة: <b>${escapeHtml(c.note)}</b></div>` : ""}
+            </div>
+
+            <div class="sub-actions">
+              <button class="a-btn primary" onclick="sendWA('${c.id}','auto')" title="واتساب">
+                <svg><use href="#i-wa"></use></svg>
+              </button>
+              <button class="a-btn primary" onclick="openReceipt('${c.id}')" title="وصل">
+                <svg><use href="#i-receipt"></use></svg>
+              </button>
+              <button class="a-btn success" onclick="togglePaid('${c.id}')" title="${c.paid ? "إلغاء الدفع" : "تسجيل دفع"}">
+                <svg><use href="#i-check"></use></svg>
+              </button>
+              <button class="a-btn" onclick="openCustomerActions('${c.id}')" title="المزيد">
+                <svg><use href="#i-more"></use></svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      box.innerHTML = html;
     }
 
-    function renderHeader(){
-      document.getElementById("uiStoreName").innerText = settings.storeName;
-      const letters = (settings.storeName || "CD").replace(/\s+/g,"").slice(0,2).toUpperCase();
-      document.getElementById("uiLogo").innerText = letters || "CD";
-    }
-
+    // =============================
+    // Home render (stats, soon list, activity)
+    // =============================
     function renderHome(){
       const today = new Date();
-      document.getElementById("uiTodayLine").innerText = today.toLocaleDateString("ar-IQ");
+      const todayLine = today.toLocaleDateString("ar-IQ", { weekday:"long", year:"numeric", month:"2-digit", day:"2-digit" });
+      document.getElementById("uiTodayLine").textContent = todayLine;
 
-      const todayIncome = sumIncomeToday();
-      const totalIncome = sumIncomeAll();
+      document.getElementById("stTodayIncome").textContent = money(sumIncomeToday());
+      document.getElementById("stTotalIncome").textContent = money(sumIncomeAll());
+      document.getElementById("stActive").textContent = String(countActive());
 
-      const active = countActive();
-      const soon = countSoon();
       const d = getRemindDays();
+      document.getElementById("lblExpSoon").textContent = `قريب الانتهاء (≤ ${d} يوم)`;
+      document.getElementById("stExpSoon").textContent = String(countSoon());
 
-      document.getElementById("stTodayIncome").innerText = money(todayIncome);
-      document.getElementById("stTotalIncome").innerText = money(totalIncome);
-      document.getElementById("stActive").innerText = String(active);
-      document.getElementById("stExpSoon").innerText = String(soon);
-
-      const lbl = document.getElementById("lblExpSoon");
-      if(d===0) lbl.innerText = "ينتهي اليوم";
-      else if(d===1) lbl.innerText = "ينتهي خلال يوم";
-      else lbl.innerText = `ينتهي خلال ${d} أيام`;
-
-      renderSoonList();
-      renderActivity();
-    }
-
-    function renderSoonList(){
-      const box = document.getElementById("uiSoonList");
-      const d = getRemindDays();
-
-      const list = customers
-        .map(c=> ({ c, st: statusOf(c) }))
+      // soon list
+      const soon = customers
+        .map(c=>({c, st: statusOf(c)}))
         .filter(x=> x.st.dl !== null && x.st.dl >= 0 && x.st.dl <= d)
         .sort((a,b)=> (a.st.dl - b.st.dl))
         .slice(0, 6);
 
-      box.innerHTML = "";
-      if(list.length===0){
-        box.innerHTML = `<div class="muted">لا يوجد اشتراكات قريبة الانتهاء ضمن الفترة الحالية.</div>`;
-        return;
-      }
-
-      list.forEach(x=>{
-        const c = x.c, st = x.st;
-        const el = document.createElement("div");
-        el.className = "sub " + (c.vip ? "vip " : "") + (st.expired ? "expired " : "") + (st.soon ? "soon ":"");
-        el.innerHTML = `
-          <div class="sub-top">
-            <div>
-              <p class="sub-name">${escapeHtml(c.name)}
-                ${c.paid ? `<span class="badge good">مدفوع</span>` : `<span class="badge bad">غير مدفوع</span>`}
-                <span class="badge warn">${daysLeftHuman(st.dl)}</span>
-              </p>
-              <div class="sub-meta">
-                <div>${escapeHtml(c.service)}</div>
-                <div>${escapeHtml(c.phone)} | ينتهي: <b>${escapeHtml(c.end)}</b></div>
-              </div>
-            </div>
-            <div class="muted">${money(c.price)}</div>
-          </div>
-
-          <div class="sub-actions">
-            <button class="a-btn primary" onclick="sendWA('${c.id}','auto')" aria-label="واتساب">
-              <svg><use href="#i-wa"></use></svg>
-            </button>
-            <button class="a-btn success" onclick="togglePaid('${c.id}')" aria-label="دفع">
-              <svg><use href="#i-check"></use></svg>
-            </button>
-            <button class="a-btn" onclick="openMore('${c.id}')" aria-label="المزيد">
-              <svg><use href="#i-more"></use></svg>
-            </button>
-          </div>
-        `;
-        box.appendChild(el);
-      });
-    }
-
-    function renderActivity(){
-      const box = document.getElementById("uiActivity");
-      box.innerHTML = "";
-      if(activity.length===0){
-        box.innerHTML = `<div class="muted">لا يوجد نشاط بعد.</div>`;
-        return;
-      }
-      activity.slice(0, 10).forEach(a=>{
-        const d = new Date(a.ts);
-        const t = d.toLocaleTimeString("ar-IQ",{ hour:"2-digit", minute:"2-digit" });
-        const amt = (a.amount!==null && a.amount!==undefined) ? ` | ${money(a.amount)}` : "";
-        const div = document.createElement("div");
-        div.className = "card";
-        div.style.boxShadow = "none";
-        div.style.marginBottom = "10px";
-        div.innerHTML = `<b>${escapeHtml(a.text)}</b><div class="muted" style="margin-top:6px;">${t}${amt}</div>`;
-        box.appendChild(div);
-      });
-    }
-
-    function renderSubs(){
-      const box = document.getElementById("uiSubs");
-      const q = (document.getElementById("qSub").value||"").trim().toLowerCase();
-      box.innerHTML = "";
-
-      let rows = customers.slice();
-
-      if(q){
-        rows = rows.filter(c=>
-          String(c.name||"").toLowerCase().includes(q) ||
-          String(c.phone||"").toLowerCase().includes(q) ||
-          String(c.service||"").toLowerCase().includes(q)
-        );
-      }
-
-      rows = rows.filter(c=>{
-        const st = statusOf(c);
-        if(filter==="vip") return !!c.vip;
-        if(filter==="paid") return !!c.paid;
-        if(filter==="unpaid") return !c.paid;
-        if(filter==="expired") return st.expired;
-        if(filter==="soon") return st.soon;
-        if(filter==="active") return (st.dl !== null && st.dl >= 0);
-        return true;
-      });
-
-      rows.sort((a,b)=>{
-        const da = parseYMD(a.end)?.getTime() || 0;
-        const db = parseYMD(b.end)?.getTime() || 0;
-        return da - db;
-      });
-
-      document.getElementById("uiCountLine").innerText = `${rows.length}`;
-
-      if(rows.length===0){
-        box.innerHTML = `<div class="card"><b>لا توجد نتائج</b><div class="muted" style="margin-top:6px;">جرّب بحث مختلف أو فلتر آخر.</div></div>`;
-        return;
-      }
-
-      rows.forEach(c=>{
-        const st = statusOf(c);
-        const el = document.createElement("div");
-        el.className = "sub " + (c.vip ? "vip " : "") + (st.expired ? "expired " : "") + (st.soon ? "soon ":"");
-        el.innerHTML = `
-          <div class="sub-top">
-            <div>
-              <p class="sub-name">${escapeHtml(c.name)}
-                ${c.paid ? `<span class="badge good">مدفوع</span>` : `<span class="badge bad">غير مدفوع</span>`}
-                ${st.expired ? `<span class="badge bad">منتهي</span>` : (st.soon ? `<span class="badge warn">${daysLeftHuman(st.dl)}</span>` : ``)}
-              </p>
-              <div class="sub-meta">
-                <div>${escapeHtml(c.service)}</div>
-                <div>${escapeHtml(c.phone)} | ينتهي: <b>${escapeHtml(c.end)}</b></div>
-                ${c.note ? `<div>${escapeHtml(c.note)}</div>` : ``}
-              </div>
-            </div>
-            <div class="muted">${money(c.price)}</div>
-          </div>
-
-          <div class="sub-actions">
-            <button class="a-btn primary" onclick="sendWA('${c.id}','auto')" aria-label="واتساب">
-              <svg><use href="#i-wa"></use></svg>
-            </button>
-            <button class="a-btn success" onclick="togglePaid('${c.id}')" aria-label="دفع">
-              <svg><use href="#i-check"></use></svg>
-            </button>
-            <button class="a-btn" onclick="openMore('${c.id}')" aria-label="المزيد">
-              <svg><use href="#i-more"></use></svg>
-            </button>
-          </div>
-        `;
-        box.appendChild(el);
-      });
-    }
-
-    function renderAddInit(){
-      renderServicesSelect();
-      if(!document.getElementById("fStart").value){
-        document.getElementById("fStart").value = ymd();
-      }
-      calcEnd();
-      applyServiceDefaults();
-    }
-
-    function renderAll(){
-      applyTheme();
-      renderHeader();
-      renderAddInit();
-      renderHome();
-      if(document.getElementById("view-subs").classList.contains("active")) renderSubs();
-    }
-
-    let toastTimer = null;
-    function showToast(title, body, actions=null, ms=4200){
-      const t = document.getElementById("toast");
-      document.getElementById("toastT").innerText = title || "";
-      document.getElementById("toastB").innerText = body || "";
-
-      const act = document.getElementById("toastActions");
-      act.innerHTML = "";
-      if(actions && actions.length){
-        act.style.display = "flex";
-        actions.forEach(a=>{
-          const b = document.createElement("button");
-          b.className = "tbtn";
-          b.textContent = a.label;
-          b.onclick = a.action;
-          act.appendChild(b);
-        });
+      const soonBox = document.getElementById("uiSoonList");
+      if(soon.length===0){
+        soonBox.innerHTML = `<div class="muted">لا يوجد اشتراكات قريبة الانتهاء.</div>`;
       }else{
-        act.style.display = "none";
+        soonBox.innerHTML = soon.map(({c, st})=>{
+          return `
+            <div class="sub soon" style="margin-bottom:10px;">
+              <div class="sub-top">
+                <div style="min-width:0;">
+                  <div class="sub-name">${escapeHtml(c.name)}</div>
+                  <div class="sub-meta">
+                    <div>الخدمة: <b>${escapeHtml(c.service)}</b></div>
+                    <div>الانتهاء: <b>${escapeHtml(c.end)}</b> • ${escapeHtml(daysLeftHuman(st.dl))}</div>
+                  </div>
+                </div>
+                <div>
+                  ${c.paid ? badgeHtml("مدفوع","good") : badgeHtml("غير مدفوع","bad")}
+                </div>
+              </div>
+
+              <div class="sub-actions">
+                <button class="a-btn primary" onclick="sendWA('${c.id}','reminder')" title="تذكير واتساب">
+                  <svg><use href="#i-wa"></use></svg>
+                </button>
+                <button class="a-btn primary" onclick="openReceipt('${c.id}')" title="وصل">
+                  <svg><use href="#i-receipt"></use></svg>
+                </button>
+                <button class="a-btn" onclick="openCustomerActions('${c.id}')" title="المزيد">
+                  <svg><use href="#i-more"></use></svg>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join("");
       }
 
-      t.style.display = "block";
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(()=>{ t.style.display="none"; }, ms);
-    }
-    function hideToast(){
-      const t = document.getElementById("toast");
-      t.style.display = "none";
-      clearTimeout(toastTimer);
-    }
-
-    function showModal(html){
-      document.getElementById("modalBody").innerHTML = html;
-      document.getElementById("modal").style.display = "flex";
-    }
-    function hideModal(){ document.getElementById("modal").style.display = "none"; }
-    function closeModal(e){ if(e && e.target && e.target.id === "modal") hideModal(); }
-
-    function escapeHtml(s){
-      return String(s||"")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;");
-    }
-
-    document.getElementById("fStart").value = ymd();
-    calcEnd();
-    renderAll();
-
-    try{
-      const mq = window.matchMedia("(prefers-color-scheme: dark)");
-      if(mq && mq.addEventListener){
-        mq.addEventListener("change", ()=>{ if((settings.theme||"system")==="system") applyTheme(); });
+      // activity
+      const act = activity.slice(0, 12);
+      const aBox = document.getElementById("uiActivity");
+      if(act.length===0){
+        aBox.innerHTML = `<div class="muted">لا يوجد نشاط بعد.</div>`;
+      }else{
+        aBox.innerHTML = act.map(x=>{
+          const amt = (x.amount !== null && x.amount !== undefined) ? ` • <b>${escapeHtml(money(x.amount))}</b>` : "";
+          return `
+            <div class="sub" style="padding:12px; margin-bottom:10px;">
+              <div style="font-weight:900;">${escapeHtml(x.text || "—")}</div>
+              <div class="muted" style="margin-top:6px;">${escapeHtml(timeHM(x.ts))}${amt}</div>
+            </div>
+          `;
+        }).join("");
       }
-    }catch(e){}
+    }
+
+    // =============================
+    // Reminders modal
+    // =============================
+    function openReminders(){
+      const d = getRemindDays();
+      const soon = customers
+        .map(c=>({c, st: statusOf(c)}))
+        .filter(x=> x.st.dl !== null && x.st.dl >= 0 && x.st.dl <= d)
+        .sort((a,b)=> a.st.dl - b.st.dl);
+
+      const expired = customers
+        .map(c=>({c, st: statusOf(c)}))
+        .filter(x=> x.st.dl !== null && x.st.dl < 0)
+        .sort((a,b)=> a.st.dl - b.st.dl);
+
+      const listHtml = (arr, kind)=> {
+        if(arr.length===0) return `<div class="muted">لا يوجد.</div>`;
+        return arr.map(({c, st})=>{
+          const line = `${escapeHtml(c.service)} • ${escapeHtml(c.end)} • ${escapeHtml(daysLeftHuman(st.dl))}`;
+          const btn = (kind==="soon")
+            ? `<button class="btn primary full" onclick="sendWA('${c.id}','reminder')">إرسال تذكير</button>`
+            : `<button class="btn soft full" onclick="sendWA('${c.id}','status')">إرسال حالة</button>`;
+          return `
+            <div class="card" style="box-shadow:none;">
+              <div style="font-weight:900;">${escapeHtml(c.name)}</div>
+              <div class="muted" style="margin-top:6px;">${line}</div>
+              <div class="grid cols-2" style="margin-top:10px;">
+                ${btn}
+                <button class="btn soft full" onclick="openReceipt('${c.id}')">وصل</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      };
+
+      const body = `
+        <h3>المنتهي قريباً / المنتهي</h3>
+        <p class="subtxt">قريب الانتهاء خلال ≤ ${d} يوم. تستطيع إرسال تذكير أو عرض الوصل.</p>
+
+        <div style="font-weight:900; margin:10px 0 8px;">قريب الانتهاء</div>
+        ${listHtml(soon, "soon")}
+
+        <div style="font-weight:900; margin:14px 0 8px;">منتهي</div>
+        ${listHtml(expired, "expired")}
+
+        <button class="btn soft full" style="margin-top:10px;" onclick="hideModal()">إغلاق</button>
+      `;
+      showModal(body);
+    }
+
+    // =============================
+    // Render all
+    // =============================
+    function renderAll(){
+      renderHome();
+      renderSubs();
+      renderAddInit();
+    }
+
+    // =============================
+    // Init
+    // =============================
+    (function init(){
+      applyTheme();
+      applyBrand();
+      renderAll();
+      // Ensure add page defaults are ready (even if not opened yet)
+      const startEl = document.getElementById("fStart");
+      if(startEl) startEl.value = ymd();
+      calcEnd();
+    })();
   </script>
 </body>
 </html>
