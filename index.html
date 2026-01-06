@@ -1034,7 +1034,12 @@
       }
       return target;
     }
-    function uid(){ return (crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now()+"_"+Math.random().toString(16).slice(2)); }
+    function uid(){
+      try{
+        if(window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
+      }catch(e){}
+      return (Date.now()+"_"+Math.random().toString(16).slice(2));
+    }
     function nowISO(){ return new Date().toISOString(); }
     function ymd(d=new Date()){
       const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -2128,42 +2133,161 @@ Amount: ${c.price}
 Paid: ${c.paid ? "yes" : "no"}
 Method: ${c.paidMethod || ""}
 Issued: ${ymd()} ${time}`;
-        new QRCode(qrEl, { text: qrData, width: 120, height: 120, correctLevel: QRCode.CorrectLevel.M });
+        if(window.QRCode){
+          new QRCode(qrEl, { text: qrData, width: 120, height: 120, correctLevel: QRCode.CorrectLevel.M });
+        }else{
+          // QR library not loaded (offline) — keep the receipt usable.
+          qrEl.innerHTML = `<div class="muted" style="text-align:center;">QR غير متوفر بدون انترنت</div>`;
+        }
       }
     }
 
-    async function openReceipt(id){
+    
+function openReceipt(id){
+      const c = customers.find(x=>x.id===id);
+      if(!c) return;
+
+      // Always show a preview first (works even if html2canvas is missing)
+      fillReceiptForCustomer(c);
+
+      // Clone the hidden receipt to display inside the modal
+      const clone = document.getElementById("receiptBox").cloneNode(true);
+      clone.id = "receiptPreview";
+      clone.style.width = "100%";
+      clone.style.maxWidth = "420px";
+      clone.style.margin = "0 auto";
+      clone.style.boxShadow = "var(--shadow2)";
+
+      window.__lastReceiptDataUrl = null;
+
+      const body = `
+        <h3>وصل ${escapeHtml(c.name)}</h3>
+        <p class="subtxt">
+          إذا ما اشتغل (تحويل لصورة)، هذا غالباً بسبب عدم توفر الانترنت لتحميل مكتبة html2canvas،
+          أو لأن WebView يمنع التحميل. لكن الوصل سيظهر هنا دائماً.
+        </p>
+
+        <div style="text-align:center;" id="receiptPreviewContainer"></div>
+
+        <div class="grid cols-2" style="margin-top:12px;">
+          <button class="btn primary full" onclick="exportReceiptPng('${id}')">تحويل لصورة</button>
+          <button class="btn soft full" onclick="hideModal()">إغلاق</button>
+        </div>
+
+        <div id="receiptImgBox" style="display:none; text-align:center; margin-top:12px;">
+          <img id="receiptImg" alt="receipt" style="width:100%;max-width:420px;border-radius:18px;border:1px solid var(--line);" />
+        </div>
+
+        <div class="grid cols-2" id="receiptImgActions" style="display:none; margin-top:12px;">
+          <button class="btn success full" onclick="downloadReceiptImage()">تحميل / حفظ</button>
+          <button class="btn soft full" onclick="openReceiptImageExternal()">فتح الصورة</button>
+        </div>
+
+        <div class="muted" style="margin-top:10px;">
+          ملاحظة: في Kodular، إذا التحميل ما اشتغل داخل التطبيق، زر (فتح الصورة) يفتحها خارجياً وتقدر تحفظها من هناك.
+        </div>
+      `;
+      showModal(body);
+
+      setTimeout(()=>{
+        const cont = document.getElementById("receiptPreviewContainer");
+        if(cont){
+          cont.innerHTML = "";
+          cont.appendChild(clone);
+        }
+      }, 0);
+    }
+
+    async function exportReceiptPng(id){
       const c = customers.find(x=>x.id===id);
       if(!c) return;
 
       fillReceiptForCustomer(c);
-      await new Promise(r=>setTimeout(r, 80)); // allow QR to render
 
-      const canvas = await html2canvas(document.getElementById("receiptBox"), { scale: 2, backgroundColor: "#ffffff" });
-      const imgUrl = canvas.toDataURL("image/png");
-      window.__lastReceipt = imgUrl;
+      if(!window.html2canvas){
+        showToast("تنبيه", "مكتبة التحويل (html2canvas) غير محمّلة. تأكد من الانترنت أو حمّل الملف مع المكتبات محلياً.", null, 4500);
+        return;
+      }
 
-      const body = `
-        <h3>وصل ${escapeHtml(c.name)}</h3>
-        <p class="subtxt">صورة مرتبة جاهزة للحفظ/الإرسال.</p>
+      try{
+        // Allow QR to render
+        await new Promise(r=>setTimeout(r, 120));
 
-        <div style="text-align:center;">
-          <img src="${imgUrl}" style="width:100%;max-width:420px;border-radius:18px;border:1px solid var(--line);" />
-        </div>
+        const canvas = await html2canvas(document.getElementById("receiptBox"), {
+          scale: 2,
+          backgroundColor: "#ffffff",
+          useCORS: true,
+          allowTaint: true
+        });
 
-        <div class="grid cols-2" style="margin-top:12px;">
-          <button class="btn primary full" onclick="downloadDataUrl(window.__lastReceipt, 'receipt-${ymd()}.png')">تحميل</button>
-          <button class="btn soft full" onclick="hideModal()">إغلاق</button>
-        </div>
-      `;
-      showModal(body);
+        const imgUrl = canvas.toDataURL("image/png");
+        window.__lastReceiptDataUrl = imgUrl;
+
+        const imgBox = document.getElementById("receiptImgBox");
+        const imgEl  = document.getElementById("receiptImg");
+        const acts   = document.getElementById("receiptImgActions");
+
+        if(imgEl) imgEl.src = imgUrl;
+        if(imgBox) imgBox.style.display = "block";
+        if(acts) acts.style.display = "grid";
+
+        showToast("تم", "تم تجهيز صورة الوصل", null, 2200);
+      }catch(e){
+        console.error(e);
+        showToast("خطأ", "تعذر تحويل الوصل لصورة داخل WebView. جرّب زر (فتح الصورة) أو افتح الملف بمتصفح Chrome.", null, 4500);
+      }
+    }
+
+    function downloadReceiptImage(){
+      const dataUrl = window.__lastReceiptDataUrl;
+      if(!dataUrl){
+        showToast("تنبيه", "حوّل الوصل لصورة أولاً (زر تحويل لصورة).", null, 3500);
+        return;
+      }
+
+      // In Kodular/AppInventor WebViewer: download attribute may not work.
+      const hasBridge = (window.Kodular && window.Kodular.setWebViewString) || (window.AppInventor && window.AppInventor.setWebViewString);
+
+      if(hasBridge){
+        // Try to open externally (best chance to save on Android)
+        openExternal(dataUrl);
+
+        // Also send base64 to the host (optional for you to handle in Kodular)
+        try{
+          const payload = "RECEIPT_PNG:" + dataUrl;
+          if(window.Kodular && window.Kodular.setWebViewString) window.Kodular.setWebViewString(payload);
+          else if(window.AppInventor && window.AppInventor.setWebViewString) window.AppInventor.setWebViewString(payload);
+        }catch(e){}
+
+        showToast("تم", "تم فتح الصورة خارجياً. إذا تريد حفظ مباشر داخل التطبيق، استقبل (RECEIPT_PNG) من WebViewString.", null, 4500);
+        return;
+      }
+
+      // Browser fallback
+      downloadDataUrl(dataUrl, `receipt-${ymd()}.png`);
+    }
+
+    function openReceiptImageExternal(){
+      const dataUrl = window.__lastReceiptDataUrl;
+      if(!dataUrl){
+        showToast("تنبيه", "حوّل الوصل لصورة أولاً (زر تحويل لصورة).", null, 3500);
+        return;
+      }
+      openExternal(dataUrl);
     }
 
     function downloadDataUrl(dataUrl, filename){
-      const a = document.createElement("a");
-      a.href = dataUrl;
-      a.download = filename || `receipt-${ymd()}.png`;
-      a.click();
+      try{
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = filename || `receipt-${ymd()}.png`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }catch(e){
+        // fallback: open the image
+        openExternal(dataUrl);
+      }
     }
 
     // =============================
